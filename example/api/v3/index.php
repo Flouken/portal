@@ -3,7 +3,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/portal/Portal.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/lib/portal/Portal.php';
 
 $app = new Portal();
 
@@ -80,20 +80,20 @@ $app->post('/messages', function($request, $response) {
  * middlewares and finaly at the route itself.
  */
 
-function check_session($request, $response) {
+function check_session($req, $res) {
     //Do some logic here to check session
-    $request->mw_data->user_level = 1;
+    $req->mw_data->user_level = 1;
 }
 
-function logger($request, $response) {
+function logger($req, $res) {
     //do some logging here after the check_session is done
     //log_write_session_check($request->mw_data->user_level);
 }
 
 //How to register the middleware route specific
-$app->get('/checkpoint', function($request, $response) {
-    $user_level = $request->mw_data->user_level; //get the user_level from middleware
-    $response->send(['user_level' => $user_level]);
+$app->get('/checkpoint', function($req, $res) {
+    $user_level = $req->mw_data->user_level; //get the user_level from middleware
+    $res->send(['user_level' => $user_level]);
 }, [check_session, logger]); //register route specific middlewares like this in an array
 
 //How to register middleware global to all routes
