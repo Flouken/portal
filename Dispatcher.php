@@ -10,7 +10,7 @@ class Dispatcher
         $this->patch_routes   = [];
         $this->delete_routes  = [];
     }
-    
+
     public function add_get_route($routeParser, $callback, $middleware)
     {
         $route = new Route($routeParser, $callback, $middleware);
@@ -48,6 +48,8 @@ class Dispatcher
         if($request_method === 'get')
         {
             $route = $this->get_routes[$active_url];
+            if($route === null)
+                Stop::bad_request();
             $request->append_url_parameters($route->routeParser->parameter_values());
             GlobalMiddleware::execute($request, $response);
             $route->execute_middleware_pipe($request, $response);
@@ -56,6 +58,8 @@ class Dispatcher
         if($request_method === 'post')
         {
             $route = $this->post_routes[$active_url];
+            if($route === null)
+                Stop::bad_request();
             $request->append_url_parameters($route->routeParser->parameter_values());
             GlobalMiddleware::execute($request, $response);
             $route->execute_middleware_pipe($request, $response);
@@ -64,6 +68,8 @@ class Dispatcher
         if($request_method === 'patch')
         {
             $route = $this->patch_routes[$active_url];
+            if($route === null)
+                Stop::bad_request();
             $request->append_url_parameters($route->routeParser->parameter_values());
             GlobalMiddleware::execute($request, $response);
             $route->execute_middleware_pipe($request, $response);
@@ -72,6 +78,8 @@ class Dispatcher
         if($request_method === 'delete')
         {
             $route = $this->delete_routes[$active_url];
+            if($route === null)
+                Stop::bad_request();
             $request->append_url_parameters($route->routeParser->parameter_values());
             GlobalMiddleware::execute($request, $response);
             $route->execute_middleware_pipe($request, $response);
